@@ -2,8 +2,12 @@ package com.romulo.manage.dto;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 import com.romulo.manage.entities.Person;
+import com.romulo.manage.entities.Address;
 
 public class PersonDTO implements Serializable {
 
@@ -13,6 +17,8 @@ public class PersonDTO implements Serializable {
 	private Long id;
 	private String name;
 	private LocalDate birthDate;
+	
+	private List<AddressDTO> addresses = new ArrayList<>();
 	
 	public PersonDTO() {
 		
@@ -28,6 +34,11 @@ public class PersonDTO implements Serializable {
 		this.id = entity.getId();
 		this.name = entity.getName();
 		this.birthDate = entity.getBirthDate();
+	}
+	
+	public PersonDTO(Person entity, Set<Address> addresses) {
+		this(entity);
+		addresses.forEach(address -> this.addresses.add(new AddressDTO(address)));
 	}
 
 	public Long getId() {
@@ -54,7 +65,9 @@ public class PersonDTO implements Serializable {
 		this.birthDate = birthDate;
 	}
 	
-	
+	public List<AddressDTO> getAddresses() {
+		return addresses;
+	}
 	
 	
 }

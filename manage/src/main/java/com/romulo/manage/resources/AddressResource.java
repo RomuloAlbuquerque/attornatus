@@ -17,46 +17,46 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.romulo.manage.dto.PersonDTO;
-import com.romulo.manage.services.PersonService;
+import com.romulo.manage.dto.AddressDTO;
+import com.romulo.manage.services.AddressService;
 
 @RestController
-@RequestMapping(value = "/person")
-public class PersonResource {
+@RequestMapping(value = "/address")
+public class AddressResource {
 	
 	@Autowired
-	private PersonService service;
+	private AddressService service;
 	
 	@GetMapping
-	public ResponseEntity<Page<PersonDTO>> findAll(
+	public ResponseEntity<Page<AddressDTO>> findAll(
 			@RequestParam(value = "page", defaultValue = "0") Integer page,
 			@RequestParam(value = "linesPerPage", defaultValue = "12") Integer linesPerPage,
 			@RequestParam(value = "direction", defaultValue = "ASC") String direction,
-			@RequestParam(value = "orderBy", defaultValue = "name") String orderBy
+			@RequestParam(value = "orderBy", defaultValue = "streetAddress") String orderBy
 			) {
 		
 		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
 				
-		Page<PersonDTO> list = service.findAllPaged(pageRequest);
+		Page<AddressDTO> list = service.findAllPaged(pageRequest);
 		
 		return ResponseEntity.ok().body(list);
 	}
 	
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<PersonDTO> findById(@PathVariable Long id) {
-		PersonDTO dto = service.findById(id);
+	public ResponseEntity<AddressDTO> findById(@PathVariable Long id) {
+		AddressDTO dto = service.findById(id);
 		return ResponseEntity.ok().body(dto);
 	}
 	
 	@PostMapping
-	public ResponseEntity<PersonDTO> insert(@RequestBody PersonDTO dto){
+	public ResponseEntity<AddressDTO> insert(@RequestBody AddressDTO dto){
 		dto = service.insert(dto);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(dto.getId()).toUri();
 		return ResponseEntity.created(uri).body(dto); 
 	}
 	
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<PersonDTO> update(@PathVariable Long id, @RequestBody PersonDTO dto){
+	public ResponseEntity<AddressDTO> update(@PathVariable Long id, @RequestBody AddressDTO dto){
 		dto = service.update(id, dto);
 		return ResponseEntity.ok().body(dto); 
 	}

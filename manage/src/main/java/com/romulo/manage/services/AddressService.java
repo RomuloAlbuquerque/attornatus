@@ -13,51 +13,51 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.romulo.manage.dto.AddressDTO;
-import com.romulo.manage.dto.PersonDTO;
 import com.romulo.manage.entities.Address;
-import com.romulo.manage.entities.Person;
 import com.romulo.manage.repositories.AddressRepository;
-import com.romulo.manage.repositories.PersonRepository;
 import com.romulo.manage.services.exceptions.DatabaseException;
 import com.romulo.manage.services.exceptions.ResourceNotFoundException;
 
 @Service
-public class PersonService {
+public class AddressService {
 
 	@Autowired
-	private PersonRepository repository;
+	private AddressRepository repository;
 
-	@Autowired
-	private AddressRepository addressRepository;
-	
 	@Transactional(readOnly = true)
-	public Page<PersonDTO> findAllPaged(PageRequest pageRequest) {
-		Page<Person> list = repository.findAll(pageRequest);
-		return list.map(x -> new PersonDTO(x));
+	public Page<AddressDTO> findAllPaged(PageRequest pageRequest) {
+		Page<Address> list = repository.findAll(pageRequest);
+		return list.map(x -> new AddressDTO(x));
 	}
 
 	@Transactional(readOnly = true)
-	public PersonDTO findById(Long id) {
-		Optional<Person> obj = repository.findById(id);
-		Person entity = obj.orElseThrow(() -> new ResourceNotFoundException("Entity not found"));
-		return new PersonDTO(entity, entity.getAddresses());
+	public AddressDTO findById(Long id) {
+		Optional<Address> obj = repository.findById(id);
+		Address entity = obj.orElseThrow(() -> new ResourceNotFoundException("Entity Not Found"));
+		return new AddressDTO(entity);
 	}
 
 	@Transactional
-	public PersonDTO insert(PersonDTO dto) {
-		Person entity = new Person();
-		copyDtoToEntity(dto, entity);
+	public AddressDTO insert(AddressDTO dto) {
+		Address entity = new Address();
+		entity.setStreetAddress(dto.getStreetAddress());
+		entity.setCep(dto.getCep());
+		entity.setNumber(dto.getNumber());
+		entity.setCity(dto.getCity());
 		entity = repository.save(entity);
-		return new PersonDTO(entity);
+		return new AddressDTO(entity);
 	}
 
 	@Transactional
-	public PersonDTO update(Long id, PersonDTO dto) {
+	public AddressDTO update(Long id, AddressDTO dto) {
 		try {
-				Person entity = repository.getOne(id);
-				copyDtoToEntity(dto, entity);
+				Address entity = repository.getOne(id);
+				entity.setStreetAddress(dto.getStreetAddress());
+				entity.setCep(dto.getCep());
+				entity.setNumber(dto.getNumber());
+				entity.setCity(dto.getCity());
 				entity = repository.save(entity);
-				return new PersonDTO(entity);
+				return new AddressDTO(entity);
 		}
 		catch(EntityNotFoundException e) {
 			throw new ResourceNotFoundException("Id not found: "+id);
@@ -76,17 +76,7 @@ public class PersonService {
 			throw new DatabaseException("Integrity violation");
 		}
 		
-	}
-	
-	private void copyDtoToEntity(PersonDTO dto, Person entity) {
-
-		entity.setName(dto.getName());
-		entity.setBirthDate(dto.getBirthDate());
 		
-		entity.getAddresses().clear();
-		for (AddressDTO addressDto : dto.getAddresses()) {
-			Address address = addressRepository.getOne(addressDto.getId());
-			entity.getAddresses().add(address);			
-		}
+		
 	}
 }

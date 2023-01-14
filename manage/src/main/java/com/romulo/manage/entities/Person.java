@@ -100,6 +100,10 @@ public class Person implements Serializable {
 	public void preUpdate() {
 		updatedAt = Instant.now();
 	}
+	
+	public Set<Address> getAddresses() {
+		return addresses;
+	}
 
 	@Override
 	public int hashCode() {
