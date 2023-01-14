@@ -2,34 +2,30 @@ package com.romulo.manage.entities;
 
 import java.io.Serializable;
 import java.time.Instant;
-import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "tb_person")
-public class Person implements Serializable {
+@Table(name = "tb_address")
+public class Address implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	private String name;
-	private LocalDate birthDate;
+	private String streetAddress;
+	private String cep;
+	private Integer number;
+	private String city;
 	
 	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
 	private Instant createdAt;
@@ -37,28 +33,19 @@ public class Person implements Serializable {
 	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
 	private Instant updatedAt;
 	
-	
-	@ManyToMany
-	@JoinTable(name = "tb_person_address",
-		joinColumns = @JoinColumn(name = "person_id"),
-		inverseJoinColumns = @JoinColumn(name = "address_id"))	
-	Set<Address> addresses = new HashSet<>();
-	
-	public Person() {
+	public Address() {
 		
 	}
 
-	public Person(Long id, String name, LocalDate birthDate) {
+	public Address(Long id, String streetAddress, String cep, Integer number, String city) {
+		super();
 		this.id = id;
-		this.name = name;
-		this.birthDate = birthDate;
+		this.streetAddress = streetAddress;
+		this.cep = cep;
+		this.number = number;
+		this.city = city;
 	}
 
-	public Person(String name, LocalDate birthDate) {
-		this.name = name;
-		this.birthDate = birthDate;
-	}
-	
 	public Long getId() {
 		return id;
 	}
@@ -67,20 +54,36 @@ public class Person implements Serializable {
 		this.id = id;
 	}
 
-	public String getName() {
-		return name;
+	public String getStreetAddress() {
+		return streetAddress;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setStreetAddress(String streetAddress) {
+		this.streetAddress = streetAddress;
 	}
 
-	public void setBirthDate(LocalDate birthDate) {
-		this.birthDate = birthDate;
+	public String getCep() {
+		return cep;
 	}
-	
-	public LocalDate getBirthDate() {
-		return birthDate;
+
+	public void setCep(String cep) {
+		this.cep = cep;
+	}
+
+	public Integer getNumber() {
+		return number;
+	}
+
+	public void setNumber(Integer number) {
+		this.number = number;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
 	}
 
 	public Instant getCreatedAt() {
@@ -114,16 +117,10 @@ public class Person implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Person other = (Person) obj;
+		Address other = (Address) obj;
 		return Objects.equals(id, other.id);
 	}
-
-	@Override
-	public String toString() {
-		return "Person [id=" + id + ", name=" + name + ", birthDate=" + birthDate + ", createdAt=" + createdAt
-				+ ", updatedAt=" + updatedAt + "]";
-	}
-
-
 	
+	
+
 }
