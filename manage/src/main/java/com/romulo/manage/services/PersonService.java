@@ -31,4 +31,11 @@ public class PersonService {
 		Person entity = obj.orElseThrow(()-> new EntityNotFoundException("Entity Not Found"));
 		return new PersonDTO(entity);
 	}
+
+	@Transactional
+	public PersonDTO insert(PersonDTO dto) {
+		Person entity = new Person(dto.getName(), dto.getBirthDate());
+		entity = repository.save(entity);
+		return new PersonDTO(entity);
+	}
 }

@@ -32,6 +32,11 @@ public class Person implements Serializable {
 		this.birthDate = birthDate;
 	}
 
+	public Person(String name, LocalDate birthDate) {
+		this.name = name;
+		this.birthDate = birthDate;
+	}
+	
 	public Long getId() {
 		return id;
 	}
