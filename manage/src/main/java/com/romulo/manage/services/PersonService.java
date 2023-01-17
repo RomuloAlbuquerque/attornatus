@@ -30,6 +30,9 @@ public class PersonService {
 	@Autowired
 	private AddressRepository addressRepository;
 	
+	@Autowired
+	private AddressService addressService;
+	
 	@Transactional(readOnly = true)
 	public Page<PersonDTO> findAllPaged(PageRequest pageRequest) {
 		Page<Person> list = repository.findAll(pageRequest);
@@ -48,7 +51,7 @@ public class PersonService {
 		Person entity = new Person();
 		copyDtoToEntity(dto, entity);
 		entity = repository.save(entity);
-		return new PersonDTO(entity);
+		return new PersonDTO(entity, entity.getAddresses());
 	}
 
 	@Transactional
@@ -62,7 +65,6 @@ public class PersonService {
 		catch(EntityNotFoundException e) {
 			throw new ResourceNotFoundException("Id not found: "+id);
 		}
-	
 	}
 
 	public void delete(Long id) {
@@ -75,7 +77,22 @@ public class PersonService {
 		catch(DataIntegrityViolationException e) {
 			throw new DatabaseException("Integrity violation");
 		}
-		
+	}
+	
+	@Transactional
+	public PersonDTO addAddressInPersonById(Long id, AddressDTO addressDTO) {
+		try {
+				Person entity = repository.getOne(id);
+				Address addressEntity = new Address();
+				addressService.copyDtoToEntity(addressDTO, addressEntity);
+				addressEntity = addressRepository.save(addressEntity);
+				entity.getAddresses().add(addressEntity);
+				entity = repository.save(entity);
+				return new PersonDTO(entity, entity.getAddresses());
+		}
+		catch(EntityNotFoundException e) {
+			throw new ResourceNotFoundException("Id not found: "+ id);
+		}
 	}
 	
 	private void copyDtoToEntity(PersonDTO dto, Person entity) {

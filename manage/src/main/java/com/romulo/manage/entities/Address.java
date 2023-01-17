@@ -26,6 +26,7 @@ public class Address implements Serializable {
 	private String cep;
 	private Integer number;
 	private String city;
+	private boolean main;
 	
 	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
 	private Instant createdAt;
@@ -34,16 +35,19 @@ public class Address implements Serializable {
 	private Instant updatedAt;
 	
 	public Address() {
-		
+		this.main = false;
 	}
 
-	public Address(Long id, String streetAddress, String cep, Integer number, String city) {
+	
+
+	public Address(Long id, String streetAddress, String cep, Integer number, String city, boolean main) {
 		super();
 		this.id = id;
 		this.streetAddress = streetAddress;
 		this.cep = cep;
 		this.number = number;
 		this.city = city;
+		this.main = main;
 	}
 
 	public Long getId() {
@@ -94,6 +98,14 @@ public class Address implements Serializable {
 		return updatedAt;
 	}
 	
+	public boolean isMain() {
+		return main;
+	}
+
+	public void setMain(boolean main) {
+		this.main = main;
+	}
+
 	@PrePersist
 	public void prePersist() {
 		createdAt = Instant.now();
@@ -119,6 +131,14 @@ public class Address implements Serializable {
 			return false;
 		Address other = (Address) obj;
 		return Objects.equals(id, other.id);
+	}
+
+
+
+	@Override
+	public String toString() {
+		return "Address [id=" + id + ", streetAddress=" + streetAddress + ", cep=" + cep + ", number=" + number
+				+ ", city=" + city + ", main=" + main + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + "]";
 	}
 	
 	

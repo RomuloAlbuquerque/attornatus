@@ -68,6 +68,13 @@ public class PersonDTO implements Serializable {
 	public List<AddressDTO> getAddresses() {
 		return addresses;
 	}
+
+	@Override
+	public String toString() {
+		return "PersonDTO [id=" + id + ", name=" + name + ", birthDate=" + birthDate + ", addresses=" + addresses + "]";
+	}
+	
+	
 	
 	
 }

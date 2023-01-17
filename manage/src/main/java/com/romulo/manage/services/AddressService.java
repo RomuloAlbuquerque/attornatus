@@ -40,11 +40,9 @@ public class AddressService {
 	@Transactional
 	public AddressDTO insert(AddressDTO dto) {
 		Address entity = new Address();
-		entity.setStreetAddress(dto.getStreetAddress());
-		entity.setCep(dto.getCep());
-		entity.setNumber(dto.getNumber());
-		entity.setCity(dto.getCity());
+		copyDtoToEntity(dto, entity);
 		entity = repository.save(entity);
+		System.out.println(entity);
 		return new AddressDTO(entity);
 	}
 
@@ -52,31 +50,34 @@ public class AddressService {
 	public AddressDTO update(Long id, AddressDTO dto) {
 		try {
 				Address entity = repository.getOne(id);
-				entity.setStreetAddress(dto.getStreetAddress());
-				entity.setCep(dto.getCep());
-				entity.setNumber(dto.getNumber());
-				entity.setCity(dto.getCity());
+				copyDtoToEntity(dto, entity);
 				entity = repository.save(entity);
 				return new AddressDTO(entity);
 		}
 		catch(EntityNotFoundException e) {
 			throw new ResourceNotFoundException("Id not found: "+id);
 		}
-	
 	}
 
 	public void delete(Long id) {
 		try {
 			repository.deleteById(id);
 		}
-		catch(EmptyResultDataAccessException e) {
+		catch (EmptyResultDataAccessException e) {
 			throw new ResourceNotFoundException("Id not found " + id);
 		}
-		catch(DataIntegrityViolationException e) {
-			throw new DatabaseException("Integrity violation");
+		catch (DataIntegrityViolationException e) {
+			throw new DatabaseException("Integrity violation (\r\n"
+					+ "this address is linked to a person, so it is not possible to delete)");
 		}
-		
-		
-		
+	}
+	
+	public void copyDtoToEntity(AddressDTO dto, Address entity) {
+
+		entity.setStreetAddress(dto.getStreetAddress());
+		entity.setCep(dto.getCep());
+		entity.setNumber(dto.getNumber());
+		entity.setCity(dto.getCity());
+		entity.setMain(dto.isMain());
 	}
 }

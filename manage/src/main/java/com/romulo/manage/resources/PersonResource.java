@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.romulo.manage.dto.AddressDTO;
 import com.romulo.manage.dto.PersonDTO;
 import com.romulo.manage.services.PersonService;
 
@@ -53,6 +54,12 @@ public class PersonResource {
 		dto = service.insert(dto);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(dto.getId()).toUri();
 		return ResponseEntity.created(uri).body(dto); 
+	}
+	
+	@PutMapping(value = "/address/{id}")
+	public ResponseEntity<PersonDTO> addAddressInPersonById(@PathVariable Long id, @RequestBody AddressDTO addressDTO){
+		PersonDTO dto = service.addAddressInPersonById(id, addressDTO);
+		return ResponseEntity.ok().body(dto); 
 	}
 	
 	@PutMapping(value = "/{id}")
