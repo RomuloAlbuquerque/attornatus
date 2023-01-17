@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,8 +34,8 @@ public class PersonService {
 	private AddressService addressService;
 	
 	@Transactional(readOnly = true)
-	public Page<PersonDTO> findAllPaged(PageRequest pageRequest) {
-		Page<Person> list = repository.findAll(pageRequest);
+	public Page<PersonDTO> findAllPaged(Pageable pageable) {
+		Page<Person> list = repository.findAll(pageable);
 		return list.map(x -> new PersonDTO(x));
 	}
 
@@ -43,7 +43,7 @@ public class PersonService {
 	public PersonDTO findById(Long id) {
 		Optional<Person> obj = repository.findById(id);
 		Person entity = obj.orElseThrow(() -> new ResourceNotFoundException("Entity not found"));
-		return new PersonDTO(entity, entity.getAddresses());
+		return new PersonDTO(entity);
 	}
 
 	@Transactional
